@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="id" x-data="app()" :class="{ 'nav-scrolled': scrolled }">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YPA-Papua — Yayasan Pelayanan Antarbudaya Papua</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine JS -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: { 950: '#060d1f', 900: '#0b1a35', 800: '#12274f', 700: '#1a3a6e', 600: '#22508a', 500: '#2e6da4' },
+            gold: { 400: '#f0c040', 500: '#e6a820', 600: '#d97c2b', 700: '#b85e18' },
+            teal: { 400: '#38c9be', 500: '#23b5a8', 600: '#1a9490' },
+            cream: { 50: '#fdfaf4', 100: '#f7f0e0' },
+          },
+          fontFamily: {
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+            serif2: ['"DM Serif Display"', 'Georgia', 'serif'],
+            body: ['"DM Sans"', 'sans-serif'],
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.7s ease forwards',
+            'fade-in': 'fadeIn 0.6s ease forwards',
+            'slide-right': 'slideRight 0.6s ease forwards',
+            'float': 'float 6s ease-in-out infinite',
+            'counter': 'counter 2s ease-out forwards',
+          },
+          keyframes: {
+            fadeUp:   { '0%': { opacity: 0, transform: 'translateY(30px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+            fadeIn:   { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+            slideRight: { '0%': { opacity: 0, transform: 'translateX(-30px)' }, '100%': { opacity: 1, transform: 'translateX(0)' } },
+            float:    { '0%,100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-12px)' } },
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: #060d1f; color: #e8e4d9; overflow-x: hidden; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #0b1a35; }
+    ::-webkit-scrollbar-thumb { background: #d97c2b; border-radius: 99px; }
+
+    /* ── Noise texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.4;
+    }
+
+    /* ── Nav ── */
+    #navbar { transition: all 0.4s ease; }
+    .nav-scrolled #navbar { background: rgba(6,13,31,0.96); backdrop-filter: blur(20px); box-shadow: 0 2px 40px rgba(0,0,0,0.4); }
+
+    /* ── Fonts ── */
+    .font-display { font-family: 'Playfair Display', Georgia, serif; }
+    .font-serif2 { font-family: 'DM Serif Display', Georgia, serif; }
+    .font-body { font-family: 'DM Sans', sans-serif; }
+
+    /* ── Hero gradient mesh ── */
+    .hero-mesh {
+      background:
+        radial-gradient(ellipse 60% 70% at 80% 20%, rgba(46,109,164,0.25) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 10% 80%, rgba(35,181,168,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 80% at 50% 50%, rgba(217,124,43,0.06) 0%, transparent 70%),
+        #060d1f;
+    }
+
+    /* ── Gold accent line ── */
+    .gold-line::before {
+      content: '';
+      display: block; width: 48px; height: 3px;
+      background: linear-gradient(90deg, #d97c2b, #f0c040);
+      margin-bottom: 1rem; border-radius: 2px;
+    }
+
+    /* ── Section alternating ── */
+    .section-dark  { background: #060d1f; }
+    .section-navy  { background: #0b1a35; }
+    .section-mid   { background: #0f2040; }
+
+    /* ── Cards ── */
+    .card-glass {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      transition: all 0.35s ease;
+    }
+    .card-glass:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(217,124,43,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(217,124,43,0.15);
+    }
+
+    /* ── Program card ── */
+    .prog-card {
+      border-left: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .prog-card:hover { border-left-color: #d97c2b; background: rgba(217,124,43,0.05); }
+
+    /* ── Stat number ── */
+    .stat-num { font-family: 'Playfair Display', serif; line-height: 1; }
+
+    /* ── Decorative shapes ── */
+    .shape-ring {
+      border: 1px solid rgba(217,124,43,0.2);
+      border-radius: 50%;
+    }
+    .shape-dot { background: rgba(217,124,43,0.6); border-radius: 50%; }
+
+    /* ── Timeline ── */
+    .timeline-item { position: relative; padding-left: 2.5rem; }
+    .timeline-item::before {
+      content: '';
+      position: absolute; left: 0; top: 8px;
+      width: 12px; height: 12px;
+      background: #d97c2b; border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(217,124,43,0.2);
+    }
+    .timeline-item::after {
+      content: '';
+      position: absolute; left: 5.5px; top: 24px;
+      width: 1px; height: calc(100% - 12px);
+      background: rgba(217,124,43,0.2);
+    }
+    .timeline-item:last-child::after { display: none; }
+
+    /* ── Scroll reveal ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-left { opacity: 0; transform: translateX(-28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal-left.visible { opacity: 1; transform: none; }
+    .reveal-right { opacity: 0; transform: translateX(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal-right.visible { opacity: 1; transform: none; }
+
+    /* ── Delays ── */
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+    .delay-5 { transition-delay: 0.5s; }
+
+    /* ── Divider ── */
+    .gold-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(217,124,43,0.6), transparent);
+    }
+
+    /* ── Image placeholder ── */
+    .img-placeholder {
+      background: linear-gradient(135deg, #12274f 0%, #1a3a6e 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── Quote block ── */
+    .quote-block {
+      border-left: 4px solid #d97c2b;
+      background: linear-gradient(90deg, rgba(217,124,43,0.06), transparent);
+    }
+
+    /* ── Button ── */
+    .btn-primary {
+      background: linear-gradient(135deg, #d97c2b, #e6a820);
+      transition: all 0.3s ease;
+      position: relative; overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.12);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+    .btn-primary:hover::after { transform: translateX(0); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(217,124,43,0.35); }
+
+    .btn-outline {
+      border: 1.5px solid rgba(217,124,43,0.6);
+      color: #d97c2b;
+      transition: all 0.3s ease;
+    }
+    .btn-outline:hover {
+      background: rgba(217,124,43,0.1);
+      border-color: #d97c2b;
+      transform: translateY(-2px);
+    }
+
+    /* ── Mobile menu ── */
+    .mobile-menu { display: none; }
+    .mobile-menu.open { display: block; }
+
+    /* ── Map embed placeholder ── */
+    .map-container { filter: hue-rotate(180deg) saturate(0.5) brightness(0.5); }
+
+    /* ── Partner logos ── */
+    .partner-item {
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: all 0.3s ease;
+    }
+    .partner-item:hover {
+      border-color: rgba(217,124,43,0.4);
+      background: rgba(217,124,43,0.05);
+    }
+
+    /* ── Language badge ── */
+    .lang-badge {
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      font-weight: 600;
+      padding: 2px 8px;
+      background: rgba(217,124,43,0.15);
+      color: #f0c040;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    /* ── Horizontal scroll on mobile ── */
+    @media (max-width: 640px) {
+      .scroll-x { overflow-x: auto; }
+    }
+  </style>
+</head>
+
+<body
+  x-data="app()"
+  @scroll.window="onScroll()"
+  class="font-body"
+>
+
+<!-- ═══════════════════════════════════════════
+  NAVBAR
+═══════════════════════════════════════════ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 py-4 px-6">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+
+    <!-- Logo -->
+    <a href="#hero" class="flex items-center gap-3 group">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-navy-600 to-navy-800 border border-gold-600/40 flex items-center justify-center flex-shrink-0 group-hover:border-gold-500 transition-colors">
+        <span class="font-display font-bold text-gold-400 text-sm leading-none">YPA</span>
+      </div>
+      <div class="hidden sm:block">
+        <div class="font-display font-bold text-white text-sm leading-tight">YPA-Papua</div>
+        <div class="text-xs text-white/40 font-body">Center for Intercultural Ministry</div>
+      </div>
+    </a>
+
+    <!-- Desktop nav -->
+    <ul class="hidden lg:flex items-center gap-8">
+      <template x-for="item in navItems" :key="item.id">
+        <li>
+          <a :href="'#'+item.id"
+             class="text-sm text-white/60 hover:text-gold-400 transition-colors font-body font-medium tracking-wide"
+             x-text="item.label"></a>
+        </li>
+      </template>
+    </ul>
+
+    <!-- CTA + Hamburger -->
+    <div class="flex items-center gap-3">
+      <a href="#kontak" class="hidden sm:inline-block btn-primary text-white text-sm font-semibold px-5 py-2.5 rounded-full font-body">
+        Hubungi Kami
+      </a>
+      <button @click="menuOpen = !menuOpen" class="lg:hidden w-9 h-9 flex flex-col items-center justify-center gap-1.5 group">
+        <span class="block w-6 h-0.5 bg-white/70 transition-all" :class="menuOpen ? 'rotate-45 translate-y-2' : ''"></span>
+        <span class="block w-4 h-0.5 bg-white/70 transition-all" :class="menuOpen ? 'opacity-0' : 'ml-auto'"></span>
+        <span class="block w-6 h-0.5 bg-white/70 transition-all" :class="menuOpen ? '-rotate-45 -translate-y-2' : ''"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div x-show="menuOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+       class="lg:hidden mt-4 rounded-2xl border border-white/10 bg-navy-900/95 backdrop-blur-xl overflow-hidden">
+    <ul class="py-2">
+      <template x-for="item in navItems" :key="item.id">
+        <li>
+          <a :href="'#'+item.id" @click="menuOpen = false"
+             class="flex items-center gap-3 px-6 py-3 text-white/70 hover:text-gold-400 hover:bg-white/5 transition-all text-sm font-medium">
+            <i :class="item.icon + ' w-4 text-gold-600/60'"></i>
+            <span x-text="item.label"></span>
+          </a>
+        </li>
+      </template>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+  HERO
+═══════════════════════════════════════════ -->
+<section id="hero" class="hero-mesh relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden">
+
+  <!-- Decorative shapes -->
+  <div class="absolute top-20 right-16 w-64 h-64 shape-ring opacity-30 animate-float" style="animation-delay:0s"></div>
+  <div class="absolute top-32 right-28 w-40 h-40 shape-ring opacity-20 animate-float" style="animation-delay:1s"></div>
+  <div class="absolute bottom-32 left-12 w-80 h-80 shape-ring opacity-15 animate-float" style="animation-delay:2s"></div>
+  <div class="absolute top-1/2 right-8 w-3 h-3 shape-dot animate-float" style="animation-delay:0.5s"></div>
+  <div class="absolute top-1/3 left-1/3 w-2 h-2 shape-dot opacity-40 animate-float" style="animation-delay:1.5s"></div>
+
+  <!-- Large BG text -->
+  <div class="absolute inset-0 flex items-center justify-end overflow-hidden pointer-events-none select-none">
+    <span class="font-display font-black text-[22vw] text-white/[0.02] leading-none mr-[-4vw]">YPA</span>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-6 relative z-10 w-full">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      <!-- Left content -->
+      <div>
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold-600/30 bg-gold-600/10 mb-8 animate-fade-in">
+          <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+          <span class="text-xs font-semibold text-gold-400 tracking-widest uppercase">Berdiri sejak 1992 · Sentani, Papua</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="font-display font-black text-white leading-[1.05] mb-6 animate-fade-up" style="animation-delay:0.1s">
+          <span class="block text-5xl lg:text-7xl">Membangun</span>
+          <span class="block text-5xl lg:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-gold-500 to-teal-400">Manusia Papua</span>
+          <span class="block text-4xl lg:text-5xl text-white/70 font-normal italic mt-1">Seutuhnya.</span>
+        </h1>
+
+        <!-- Desc -->
+        <p class="text-white/60 text-lg leading-relaxed max-w-lg mb-10 animate-fade-up font-body" style="animation-delay:0.2s">
+          Yayasan Pelayanan Antarbudaya Papua <span class="text-white/80">(YPA-Papua)</span> adalah organisasi sosial nirlaba yang berkomitmen mengembangkan mental, spiritual, dan jasmani masyarakat Papua melalui pendidikan, pelayanan lintas budaya, dan pemberdayaan komunitas.
+        </p>
+
+        <!-- Buttons -->
+        <div class="flex flex-wrap gap-4 mb-12 animate-fade-up" style="animation-delay:0.3s">
+          <a href="#program" class="btn-primary text-white font-semibold px-8 py-3.5 rounded-full flex items-center gap-2">
+            <i class="fa-solid fa-graduation-cap"></i> Lihat Program
+          </a>
+          <a href="#tentang" class="btn-outline font-semibold px-8 py-3.5 rounded-full flex items-center gap-2">
+            <i class="fa-solid fa-circle-info"></i> Tentang Kami
+          </a>
+        </div>
+
+        <!-- Stats row -->
+        <div class="flex gap-8 animate-fade-up" style="animation-delay:0.4s">
+          <div>
+            <div class="stat-num text-4xl font-bold text-white">30<span class="text-gold-500">+</span></div>
+            <div class="text-xs text-white/40 uppercase tracking-widest mt-1">Tahun Melayani</div>
+          </div>
+          <div class="w-px bg-white/10"></div>
+          <div>
+            <div class="stat-num text-4xl font-bold text-white">384<span class="text-gold-500">+</span></div>
+            <div class="text-xs text-white/40 uppercase tracking-widest mt-1">Alumni TITIP</div>
+          </div>
+          <div class="w-px bg-white/10"></div>
+          <div>
+            <div class="stat-num text-4xl font-bold text-white">3</div>
+            <div class="text-xs text-white/40 uppercase tracking-widest mt-1">Bahasa Daerah</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: featured cards -->
+      <div class="relative animate-fade-in" style="animation-delay:0.5s">
+        <!-- Main card -->
+        <div class="card-glass rounded-3xl p-8 relative overflow-hidden">
+          <div class="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-gradient-to-br from-teal-500/20 to-transparent"></div>
+          <div class="absolute -bottom-8 -left-8 w-36 h-36 rounded-full bg-gradient-to-tr from-gold-600/20 to-transparent"></div>
+
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-gold-600/20 border border-gold-600/30 flex items-center justify-center">
+              <i class="fa-solid fa-star text-gold-400 text-lg"></i>
+            </div>
+            <div>
+              <div class="font-display font-bold text-white text-lg">Program TITIP</div>
+              <div class="text-xs text-white/40">Unggulan YPA-Papua</div>
+            </div>
+          </div>
+
+          <p class="text-white/60 text-sm leading-relaxed mb-6">
+            Training Indonesians for Transition to Institutional Programs — program berasrama 1 tahun yang mempersiapkan generasi muda Papua untuk perguruan tinggi dan kepemimpinan.
+          </p>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-xl p-3 bg-white/[0.04] border border-white/[0.06]">
+              <i class="fa-solid fa-book-open text-teal-400 mb-2 block"></i>
+              <div class="text-white text-xs font-semibold">Full-Time Course</div>
+              <div class="text-white/40 text-xs">10–12 bulan</div>
+            </div>
+            <div class="rounded-xl p-3 bg-white/[0.04] border border-white/[0.06]">
+              <i class="fa-solid fa-clock text-gold-400 mb-2 block"></i>
+              <div class="text-white text-xs font-semibold">Part-Time Course</div>
+              <div class="text-white/40 text-xs">4 jam/minggu</div>
+            </div>
+            <div class="rounded-xl p-3 bg-white/[0.04] border border-white/[0.06]">
+              <i class="fa-solid fa-chalkboard-teacher text-teal-400 mb-2 block"></i>
+              <div class="text-white text-xs font-semibold">Teacher Training</div>
+              <div class="text-white/40 text-xs">Pelatihan guru</div>
+            </div>
+            <div class="rounded-xl p-3 bg-white/[0.04] border border-white/[0.06]">
+              <i class="fa-solid fa-sun text-gold-400 mb-2 block"></i>
+              <div class="text-white text-xs font-semibold">Summer Course</div>
+              <div class="text-white/40 text-xs">Intensif musim panas</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating pill -->
+        <div class="absolute -bottom-5 -left-5 card-glass rounded-2xl px-5 py-3 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-teal-500/20 flex items-center justify-center">
+            <i class="fa-solid fa-location-dot text-teal-400 text-sm"></i>
+          </div>
+          <div>
+            <div class="text-white text-xs font-semibold">Sentani, Kab. Jayapura</div>
+            <div class="text-white/40 text-xs">Papua, Indonesia</div>
+          </div>
+        </div>
+
+        <!-- Floating badge -->
+        <div class="absolute -top-5 -right-5 card-glass rounded-2xl px-4 py-3 flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-gold-400"></i>
+          <span class="text-white text-xs font-semibold">Terdaftar Resmi</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-float">
+    <span class="text-white/30 text-xs tracking-widest uppercase">Scroll</span>
+    <div class="w-px h-10 bg-gradient-to-b from-white/30 to-transparent"></div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+  TENTANG KAMI
+═══════════════════════════════════════════ -->
+<section id="tentang" class="section-navy py-24 relative overflow-hidden">
+  <!-- BG accent -->
+  <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-navy-800/50 to-transparent pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- Section label -->
+    <div class="flex items-center gap-4 mb-4 reveal">
+      <div class="h-px flex-1 max-w-[60px] bg-gold-600/60"></div>
+      <span class="text-gold-500 text-xs font-semibold tracking-widest uppercase">Tentang Kami</span>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-16 items-start">
+      <!-- Left -->
+      <div>
+        <h2 class="font-display font-bold text-white text-5xl leading-tight mb-6 reveal">
+          Lebih dari Tiga Dekade<br/>
+          <span class="italic text-gold-400">Melayani Papua</span>
+        </h2>
+
+        <div class="quote-block pl-6 py-4 rounded-r-xl mb-8 reveal delay-1">
+          <p class="font-serif2 text-white/80 text-lg italic leading-relaxed">
+            "Terwujudnya manusia baru Papua seutuhnya yang mandiri, berjiwa pelayan, memiliki prinsip-prinsip moral, kualitas intelektual dan sosial yang tinggi untuk membangun keluarga, masyarakat dan bangsanya."
+          </p>
+          <p class="text-gold-500 text-sm font-semibold mt-3">— Visi YPA-Papua</p>
+        </div>
+
+        <p class="text-white/60 leading-relaxed mb-5 reveal delay-2">
+          YPA-Papua didirikan pada tahun <strong class="text-white">1992</strong> oleh orang-orang muda Papua yang berkomitmen membangun tanah mereka. Berpusat di <strong class="text-white">Sentani, Kabupaten Jayapura</strong>, pelayanannya kini menjangkau seluruh Tanah Papua.
+        </p>
+        <p class="text-white/60 leading-relaxed mb-8 reveal delay-2">
+          Sebagai organisasi sosial nirlaba, YPA-Papua menjadi mitra pemerintah dan berbagai organisasi dalam melaksanakan pelayanan holistik kepada masyarakat Papua yang adil dan makmur berdasarkan Pancasila dan UUD 1945.
+        </p>
+
+        <!-- Legalitas mini -->
+        <div class="reveal delay-3">
+          <div class="text-xs text-gold-500 font-semibold uppercase tracking-widest mb-3">Legalitas</div>
+          <div class="space-y-2 text-sm text-white/50">
+            <div class="flex items-start gap-2">
+              <i class="fa-solid fa-check-circle text-teal-400 mt-0.5 flex-shrink-0"></i>
+              <span>Akta Notaris No. 37 / 21 Juni 2011</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <i class="fa-solid fa-check-circle text-teal-400 mt-0.5 flex-shrink-0"></i>
+              <span>Kemenkumham RI No. AHU-6094.AH.01.04.Tahun 2011</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <i class="fa-solid fa-check-circle text-teal-400 mt-0.5 flex-shrink-0"></i>
+              <span>Dinas Kesejahteraan Sosial Provinsi Papua No. 021/LKS-Kab.JPR/I/2013</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <i class="fa-solid fa-check-circle text-teal-400 mt-0.5 flex-shrink-0"></i>
+              <span>Terdaftar Kemenag Provinsi Papua — yayasan berbasis Kristen</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: timeline + values -->
+      <div class="space-y-10">
+        <!-- Timeline -->
+        <div class="reveal reveal-right delay-2">
+          <div class="text-xs text-gold-500 font-semibold uppercase tracking-widest mb-5">Perjalanan YPA-Papua</div>
+          <div class="space-y-6">
+            <div class="timeline-item">
+              <div class="text-gold-400 font-display font-bold text-lg">1992</div>
+              <p class="text-white/60 text-sm mt-1">Didirikan oleh orang-orang muda Papua di Sentani, Kabupaten Jayapura</p>
+            </div>
+            <div class="timeline-item">
+              <div class="text-gold-400 font-display font-bold text-lg">1999</div>
+              <p class="text-white/60 text-sm mt-1">Program TITIP (Training Indonesians for Transition to Institutional Programs) mulai berjalan</p>
+            </div>
+            <div class="timeline-item">
+              <div class="text-gold-400 font-display font-bold text-lg">2011</div>
+              <p class="text-white/60 text-sm mt-1">Pendaftaran resmi Kemenkumham RI — legalisasi yayasan secara nasional</p>
+            </div>
+            <div class="timeline-item">
+              <div class="text-gold-400 font-display font-bold text-lg">2013</div>
+              <p class="text-white/60 text-sm mt-1">Pembaruan data legalitas Dinas Sosial Provinsi Papua</p>
+            </div>
+            <div class="timeline-item">
+              <div class="text-gold-400 font-display font-bold text-lg">2023</div>
+              <p class="text-white/60 text-sm mt-1">HUT ke-31 — lebih dari 384 alumni TITIP, pelayanan aktif di 3 bahasa daerah Papua</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Value cards -->
+        <div class="grid grid-cols-2 gap-4 reveal delay-4">
+          <template x-for="v in values" :key="v.title">
+            <div class="card-glass rounded-2xl p-4">
+              <div class="w-9 h-9 rounded-xl mb-3 flex items-center justify-center" :class="v.bg">
+                <i :class="v.icon + ' text-sm'" :style="'color:' + v.color"></i>
+              </div>
+              <div class="text-white text-sm font-semibold mb-1" x-text="v.title"></div>
+              <div class="text-white/40 text-xs leading-relaxed" x-text="v.desc"></div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+  VISI & MISI
+═══════════════════════════════════════════ -->
+<section id="visi-misi" class="section-mid py-24 relative overflow-hidden">
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-teal-500/5 blur-3xl"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <div class="inline-flex items-center gap-3 mb-4">
+        <div class="h-px w-12 bg-gold-600/60"></div>
+        <span class="text-gold-500 text-xs font-semibold tracking-widest uppercase">Fondasi Pelayanan</span>
+        <div class="h-px w-12 bg-gold-600/60"></div>
+      </div>
+      <h2 class="font-display font-bold text-white text-5xl">Visi <span class="text-gold-400">&</span> Misi</h2>
+    </div>
+
+    <div class="grid lg:grid-cols-5 gap-8 items-stretch">
+      <!-- Visi -->
+      <div class="lg:col-span-2 card-glass rounded-3xl p-8 relative overflow-hidden reveal reveal-left">
+        <div class="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-gold-600/10"></div>
+        <div class="w-14 h-14 rounded-2xl bg-gold-600/20 border border-gold-600/30 flex items-center justify-center mb-6">
+          <i class="fa-solid fa-eye text-gold-400 text-2xl"></i>
+        </div>
+        <div class="lang-badge mb-4">Visi</div>
+        <p class="font-display font-bold text-white text-xl leading-snug">
+          Manusia Papua Seutuhnya yang Mandiri & Berjiwa Pelayan
+        </p>
+        <div class="h-px bg-white/10 my-5"></div>
+        <p class="text-white/50 text-sm leading-relaxed">
+          Terwujudnya manusia [laki-laki dan perempuan] baru Papua yang memiliki kualitas intelektual dan sosial yang tinggi, menjunjung tinggi azas kebersamaan dan kesetaraan untuk membangun keluarga, masyarakat dan bangsa.
+        </p>
+      </div>
+
+      <!-- Misi -->
+      <div class="lg:col-span-3 reveal reveal-right delay-2">
+        <div class="card-glass rounded-3xl p-8 h-full">
+          <div class="w-14 h-14 rounded-2xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center mb-6">
+            <i class="fa-solid fa-compass text-teal-400 text-2xl"></i>
+          </div>
+          <div class="lang-badge mb-4" style="background:rgba(35,181,168,0.15); color:#38c9be;">Misi</div>
+          <p class="font-display font-bold text-white text-xl mb-6">Empat Pilar Pelayanan</p>
+          <div class="space-y-5">
+            <template x-for="(m, i) in missions" :key="i">
+              <div class="flex items-start gap-4">
+                <div class="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span class="font-display font-bold text-gold-400 text-sm" x-text="i+1"></span>
+                </div>
+                <div>
+                  <div class="text-white font-semibold text-sm mb-1" x-text="m.title"></div>
+                  <div class="text-white/50 text-sm leading-relaxed" x-text="m.desc"></div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+  PROGRAM
+═══════════════════════════════════════════ -->
+<section id="program" class="section-dark py-24 relative overflow-hidden">
+  <div class="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-navy-800/30 to-transparent pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid lg:grid-cols-3 gap-12 items-start mb-16">
+      <div class="lg:col-span-1 reveal">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="h-px w-12 bg-gold-600/60"></div>
+          <span class="text-gold-500 text-xs font-semibold tracking-widest uppercase">Program</span>
+        </div>
+        <h2 class="font-display font-bold text-white text-5xl leading-tight mb-6">
+          Program<br/><span class="italic text-gold-400">Kami</span>
+        </h2>
+        <p class="text-white/50 leading-relaxed text-sm">
+          YPA-Papua menjalankan tiga bidang program utama yang saling melengkapi untuk membangun SDM Papua secara holistik.
+        </p>
+      </div>
+      <div class="lg:col-span-2 grid grid-cols-3 gap-4 reveal delay-2">
+        <template x-for="p in programStats" :key="p.label">
+          <div class="card-glass rounded-2xl p-5 text-center">
+            <i :class="p.icon + ' text-2xl mb-3 block'" :style="'color:' + p.color"></i>
+            <div class="stat-num text-3xl font-bold text-white mb-1" x-text="p.value"></div>
+            <div class="text-white/40 text-xs" x-text="p.label"></div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Program accordion tabs -->
+    <div x-data="{ active: 0 }" class="space-y-4">
+      <template x-for="(prog, i) in programs" :key="prog.id">
+        <div class="card-glass rounded-2xl overflow-hidden reveal" :class="'delay-' + (i+1)">
+          <!-- Header -->
+          <button @click="active = active === i ? -1 : i"
+                  class="w-full flex items-center justify-between px-6 py-5 text-left group">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
+                   :style="'background:' + prog.bg">
+                <i :class="prog.icon" :style="'color:' + prog.color" class="text-xl"></i>
+              </div>
+              <div>
+                <div class="text-white font-display font-bold text-lg" x-text="prog.title"></div>
+                <div class="text-white/40 text-sm" x-text="prog.subtitle"></div>
+              </div>
+            </div>
+            <div class="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center flex-shrink-0 transition-transform group-hover:border-gold-500"
+                 :class="active === i ? 'rotate-45 border-gold-500' : ''">
+              <i class="fa-solid fa-plus text-white/60 text-xs" :class="active === i ? 'text-gold-400' : ''"></i>
+            </div>
+          </button>
+
+          <!-- Content -->
+          <div x-show="active === i"
+               x-transition:enter="transition ease-out duration-300"
+               x-transition:enter-start="opacity-0 -translate-y-2"
+               x-transition:enter-end="opacity-100 translate-y-0"
+               class="px-6 pb-6">
+            <div class="border-t border-white/10 pt-5">
+              <p class="text-white/60 text-sm leading-relaxed mb-5" x-text="prog.desc"></p>
+              <div class="grid sm:grid-cols-2 gap-3">
+                <template x-for="item in prog.items" :key="item">
+                  <div class="prog-card rounded-xl p-3 bg-white/[0.02] flex items-start gap-3">
+                    <i class="fa-solid fa-arrow-right-long text-gold-500 text-xs mt-1 flex-shrink-0"></i>
+                    <span class="text-white/70 text-sm" x-text="item"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+  DAMPAK / STATISTIK
+═══════════════════════════════════════════ -->
+<section id="dampak" class="section-navy py-24 relative overflow-hidden">
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-gold-600/5 blur-3xl"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <div class="inline-flex items-center gap-3 mb-4">
+        <div class="h-px w-12 bg-gold-600/60"></div>
+        <span class="text-gold-500 text-xs font-semibold tracking-widest uppercase">Dampak Pelayanan</span>
+        <div class="h-px w-12 bg-gold-600/60"></div>
+      </div>
+      <h2 class="font-display font-bold text-white text-5xl">Hasil <span class="italic text-gold-400">Nyata</span></h2>
+    </div>
+
+    <!-- Big stats -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+      <template x-for="(s, i) in stats" :key="s.num">
+        <div class="card-glass rounded-3xl p-6 text-center group reveal" :class="'delay-' + (i+1)">
+          <div class="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center" :style="'background:' + s.bg">
+            <i :class="s.icon" :style="'color:' + s.color" class="text-2xl"></i>
+          </div>
+          <div class="stat-num font-black text-5xl text-white mb-1" x-text="s.num"></div>
+          <div class="text-gold-400 font-semibold text-sm mb-2" x-text="s.label"></div>
+          <div class="text-white/40 text-xs" x-text="s.note"></div>
+        </div>
+      </template>
+    </div>
+
+    <!-- Alumni impact -->
+    <div class="card-glass rounded-3xl p-8 reveal">
+      <div class="grid lg:grid-cols-2 gap-8 items-center">
+        <div>
+          <div class="text-xs text-gold-500 font-semibold uppercase tracking-widest mb-3">Kisah Alumni</div>
+          <h3 class="font-display font-bold text-white text-3xl mb-5">384+ Alumni, <span class="italic text-gold-400">Ribuan Dampak</span></h3>
+          <p class="text-white/60 leading-relaxed text-sm mb-6">
+            Alumni TITIP telah menyebar ke berbagai sektor strategis di Papua, Indonesia, dan mancanegara — membawa perubahan nyata di komunitas mereka masing-masing.
+          </p>
+          <div class="space-y-4">
+            <template x-for="a in alumniAchievements" :key="a.title">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" :style="'background:'+a.bg">
+                  <i :class="a.icon" :style="'color:'+a.color" class="text-sm"></i>
+                </div>
+                <div>
+                  <div class="text-white font-semibold text-sm" x-text="a.title"></div>
+                  <div class="text-white/40 text-xs" x-text="a.desc"></div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Language program regions -->
+        <div>
+          <div class="text-xs text-gold-500 font-semibold uppercase tracking-widest mb-4">Program Bahasa Daerah</div>
+          <div class="space-y-4">
+            <template x-for="lang in languages" :key="lang.name">
+              <div class="card-glass rounded-2xl p-5">
+                <div class="flex items-start justify-between mb-3">
+                  <div>
+                    <div class="text-white font-display font-bold text-lg" x-text="lang.name"></div>
+                    <div class="text-white/40 text-xs" x-text="lang.region"></div>
+                  </div>
+                  <div class="lang-badge" x-text="lang.badge"></div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <template x-for="tag in lang.tags" :key="tag">
+                    <span class="text-xs px-2 py-1 rounded-full bg-white/5 text-white/50 border border-white/10" x-text="tag"></span>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+  GALERI
+═══════════════════════════════════════════ -->
+<section id="galeri" class="section-mid py-24 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12 reveal">
+      <div>
+        <div class="flex items-center gap-4 mb-4">
+          <div class="h-px w-12 bg-gold-600/60"></div>
+          <span class="text-gold-500 text-xs font-semibold tracking-widest uppercase">Galeri Kegiatan</span>
+        </div>
+        <h2 class="font-display font-bold text-white text-5xl">Momen <span class="italic text-gold-400">Berharga</span></h2>
+      </div>
+      <div class="flex gap-2">
+        <template x-for="(cat, i) in galleryCategories" :key="cat">
+          <button @click="activeGallery = i"
+                  class="text-xs px-4 py-2 rounded-full border transition-all"
+                  :class="activeGallery === i ? 'bg-gold-600 border-gold-600 text-white' : 'border-white/20 text-white/50 hover:border-gold-600/50 hover:text-gold-400'"
+                  x-text="cat"></button>
+        </template>
+      </div>
+    </div>
+
+    <!-- Gallery grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 reveal delay-1">
+      <template x-for="(item, i) in galleryItems" :key="item.id">
+        <div @click="openLightbox(item)"
+             class="relative rounded-2xl overflow-hidden cursor-pointer group"
+             :class="i === 0 ? 'row-span-2 col-span-2 lg:col-span-1 lg:row-span-2' : ''">
+          <div class="img-placeholder w-full h-full min-h-[180px] flex flex-col items-center justify-center p-6 group-hover:scale-105 transition-transform duration-500">
+            <i :class="item.icon + ' text-4xl mb-3'" :style="'color:' + item.color"></i>
+            <div class="text-white/60 text-xs text-center" x-text="item.label"></div>
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+            <span class="text-white text-xs font-semibold" x-text="item.label"></span>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- Lightbox -->
+    <div x-show="lightbox" @click.self="lightbox = false"
+         x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-6"
+         style="display:none;">
+      <div class="max-w-lg w-full card-glass rounded-3xl p-8 text-center">
+        <div class="img-placeholder w-full h-64 rounded-2xl mb-4 mx-auto flex flex-col items-center justify-center">
+          <i :class="(lightboxItem.icon || 'fa-solid fa-image') + ' text-5xl mb-3 text-gold-400'"></i>
+          <span class="text-white/60 text-sm" x-text="lightboxItem.label || ''"></span>
+        </div>
+        <p class="text-white/60 text-sm" x-text="lightboxItem.desc || ''"></p>
+        <button @click="lightbox = false" class="mt-4 btn-outline px-6 py-2 rounded-full text-sm font-semibold">Tutup</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+  MITRA
+═══════════════════════════════════════════ -->
+<section id="mitra" class="section-dark py-24 relative overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <div class="inline-flex items-center gap-3 mb-4">
+        <div class="h-px w-12 bg-gold-600/60"></div>
+        <span class="text-gold-500 text-xs font-semibold tracking-widest uppercase">Kemitraan</span>
+        <div class="h-px w-12 bg-gold-600/60"></div>
+      </div>
+      <h2 class="font-display font-bold text-white text-5xl mb-4">Mitra <span class="italic text-gold-400">Kami</span></h2>
+      <p class="text-white/50 max-w-xl mx-auto text-sm">
+        YPA-Papua bekerja bersama berbagai lembaga lokal, nasional, dan internasional dalam melaksanakan pelayanan yang berdampak.
+      </p>
+    </div>
+
+    <!-- Partner grid -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <template x-for="(m, i) in mitra" :key="m.name">
+        <div class="partner-item card-glass rounded-2xl p-6 reveal" :class="'delay-' + (i % 3 + 1)">
+          <div class="flex items-start gap-4 mb-4">
+            <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" :style="'background:' + m.bg">
+              <i :class="m.icon" :style="'color:' + m.color" class="text-xl"></i>
+            </div>
+            <div>
+              <div class="text-white font-display font-bold text-sm leading-tight" x-text="m.name"></div>
+              <div class="lang-badge mt-1" x-text="m.type"></div>
+            </div>
+          </div>
+          <p class="text-white/50 text-xs leading-relaxed" x-text="m.desc"></p>
+        </div>
+      </template>
+    </div>
+
+    <!-- Call to partner -->
+    <div class="mt-12 card-glass rounded-3xl p-8 text-center reveal delay-3">
+      <i class="fa-solid fa-handshake text-4xl text-gold-400 mb-4 block"></i>
+      <h3 class="font-display font-bold text-white text-2xl mb-3">Bermitra dengan YPA-Papua</h3>
+      <p class="text-white/50 text-sm max-w-xl mx-auto mb-6">
+        Kami terbuka untuk kemitraan strategis dengan lembaga pemerintah, organisasi nirlaba, gereja, dunia usaha, dan lembaga internasional yang memiliki visi selaras.
+      </p>
+      <a href="#kontak" class="btn-primary inline-flex items-center gap-2 px-8 py-3 rounded-full text-white font-semibold">
+        <i class="fa-solid fa-envelope"></i> Hubungi Kami
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- ═══════════════════════════════════════════
+  KONTAK
+═══════════════════════════════════════════ -->
+<section id="kontak" class="section-navy py-24 relative overflow-hidden">
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-navy-600/20 blur-3xl"></div>
+    <div class="absolute bottom-0 right-1/4 w-64 h-64 rounded-full bg-teal-500/10 blur-3xl"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <div class="inline-flex items-center gap-3 mb-4">
+        <div class="h-px w-12 bg-gold-600/60"></div>
+        <span class="text-gold-500 text-xs font-semibold tracking-widest uppercase">Hubungi Kami</span>
+        <div class="h-px w-12 bg-gold-600/60"></div>
+      </div>
+      <h2 class="font-display font-bold text-white text-5xl">Mari <span class="italic text-gold-400">Terhubung</span></h2>
+    </div>
+
+    <div class="grid lg:grid-cols-5 gap-8">
+      <!-- Info kontak -->
+      <div class="lg:col-span-2 space-y-5 reveal reveal-left">
+        <template x-for="c in contactInfo" :key="c.label">
+          <div class="flex items-start gap-4 card-glass rounded-2xl p-5">
+            <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" :style="'background:' + c.bg">
+              <i :class="c.icon" :style="'color:' + c.color" class="text-lg"></i>
+            </div>
+            <div>
+              <div class="text-white/40 text-xs uppercase tracking-widest mb-1" x-text="c.label"></div>
+              <div class="text-white font-semibold text-sm" x-text="c.value"></div>
+              <div x-show="c.sub" class="text-white/50 text-xs mt-0.5" x-text="c.sub"></div>
+            </div>
+          </div>
+        </template>
+
+        <!-- Social links -->
+        <div class="card-glass rounded-2xl p-5">
+          <div class="text-white/40 text-xs uppercase tracking-widest mb-3">Temukan Kami</div>
+          <div class="flex gap-3">
+            <a href="https://www.ypa-papua.org" target="_blank"
+               class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:border-gold-500/50 hover:bg-gold-500/10 transition-all text-white/60 hover:text-gold-400">
+              <i class="fa-solid fa-globe text-sm"></i>
+            </a>
+            <a href="https://departemenmisiypa.blogspot.com" target="_blank"
+               class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:border-gold-500/50 hover:bg-gold-500/10 transition-all text-white/60 hover:text-gold-400">
+              <i class="fa-brands fa-blogger text-sm"></i>
+            </a>
+            <a href="mailto:info@ypa-papua.org"
+               class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:border-gold-500/50 hover:bg-gold-500/10 transition-all text-white/60 hover:text-gold-400">
+              <i class="fa-solid fa-envelope text-sm"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="lg:col-span-3 card-glass rounded-3xl p-8 reveal reveal-right delay-2">
+        <h3 class="font-display font-bold text-white text-2xl mb-2">Kirim Pesan</h3>
+        <p class="text-white/50 text-sm mb-6">Isi formulir di bawah dan tim kami akan menghubungi Anda segera.</p>
+
+        <form @submit.prevent="submitForm()" class="space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="text-white/50 text-xs uppercase tracking-widest block mb-2">Nama Lengkap</label>
+              <input type="text" x-model="form.name" placeholder="Nama Anda"
+                     class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm focus:outline-none focus:border-gold-500/60 transition-colors" />
+            </div>
+            <div>
+              <label class="text-white/50 text-xs uppercase tracking-widest block mb-2">Email</label>
+              <input type="email" x-model="form.email" placeholder="email@anda.com"
+                     class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm focus:outline-none focus:border-gold-500/60 transition-colors" />
+            </div>
+          </div>
+          <div>
+            <label class="text-white/50 text-xs uppercase tracking-widest block mb-2">Keperluan</label>
+            <select x-model="form.topic"
+                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/70 text-sm focus:outline-none focus:border-gold-500/60 transition-colors appearance-none">
+              <option value="" class="bg-navy-900">Pilih keperluan...</option>
+              <option value="titip" class="bg-navy-900">Informasi Program TITIP</option>
+              <option value="misi" class="bg-navy-900">Program Misi & Literasi</option>
+              <option value="kemitraan" class="bg-navy-900">Kemitraan & Kolaborasi</option>
+              <option value="donasi" class="bg-navy-900">Dukungan & Donasi</option>
+              <option value="lainnya" class="bg-navy-900">Lainnya</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-white/50 text-xs uppercase tracking-widest block mb-2">Pesan</label>
+            <textarea x-model="form.message" rows="4" placeholder="Tuliskan pesan Anda di sini..."
+                      class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm focus:outline-none focus:border-gold-500/60 transition-colors resize-none"></textarea>
+          </div>
+          <button type="submit"
+                  class="w-full btn-primary text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2">
+            <span x-show="!formSent"><i class="fa-solid fa-paper-plane mr-1"></i> Kirim Pesan</span>
+            <span x-show="formSent" class="flex items-center gap-2"><i class="fa-solid fa-check-circle"></i> Pesan Terkirim!</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Map placeholder -->
+    <div class="mt-8 card-glass rounded-3xl overflow-hidden reveal delay-3">
+      <div class="img-placeholder w-full h-56 flex flex-col items-center justify-center gap-3">
+        <i class="fa-solid fa-map-location-dot text-4xl text-teal-400"></i>
+        <div class="text-white/60 text-sm font-semibold">Jl. Sosial Atas, Sentani, Kab. Jayapura, Papua</div>
+        <a href="https://maps.google.com/?q=Sentani+Jayapura+Papua" target="_blank"
+           class="btn-outline text-xs px-4 py-2 rounded-full font-semibold">
+          <i class="fa-solid fa-external-link mr-1"></i> Buka di Google Maps
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+  FOOTER
+═══════════════════════════════════════════ -->
+<footer class="bg-navy-950 border-t border-white/5 py-12">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+      <!-- Brand -->
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-navy-600 to-navy-800 border border-gold-600/40 flex items-center justify-center">
+            <span class="font-display font-bold text-gold-400 text-sm">YPA</span>
+          </div>
+          <div>
+            <div class="font-display font-bold text-white text-sm">YPA-Papua</div>
+            <div class="text-xs text-white/30">Center for Intercultural Ministry</div>
+          </div>
+        </div>
+        <p class="text-white/40 text-xs leading-relaxed max-w-xs mb-4">
+          Yayasan Pelayanan Antarbudaya Papua — membangun SDM Papua seutuhnya dalam pengembangan mental, spiritual, dan jasmani sejak 1992.
+        </p>
+        <div class="flex gap-2">
+          <a href="https://www.ypa-papua.org" target="_blank" class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-gold-500/20 transition-colors text-white/40 hover:text-gold-400 text-xs">
+            <i class="fa-solid fa-globe"></i>
+          </a>
+          <a href="https://departemenmisiypa.blogspot.com" target="_blank" class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-gold-500/20 transition-colors text-white/40 hover:text-gold-400 text-xs">
+            <i class="fa-brands fa-blogger"></i>
+          </a>
+          <a href="mailto:info@ypa-papua.org" class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-gold-500/20 transition-colors text-white/40 hover:text-gold-400 text-xs">
+            <i class="fa-solid fa-envelope"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Navigasi -->
+      <div>
+        <div class="text-white/60 text-xs font-semibold uppercase tracking-widest mb-4">Navigasi</div>
+        <ul class="space-y-2 text-xs text-white/40">
+          <li><a href="#hero" class="hover:text-gold-400 transition-colors">Beranda</a></li>
+          <li><a href="#tentang" class="hover:text-gold-400 transition-colors">Tentang Kami</a></li>
+          <li><a href="#visi-misi" class="hover:text-gold-400 transition-colors">Visi & Misi</a></li>
+          <li><a href="#program" class="hover:text-gold-400 transition-colors">Program</a></li>
+          <li><a href="#dampak" class="hover:text-gold-400 transition-colors">Dampak</a></li>
+          <li><a href="#galeri" class="hover:text-gold-400 transition-colors">Galeri</a></li>
+          <li><a href="#mitra" class="hover:text-gold-400 transition-colors">Mitra</a></li>
+          <li><a href="#kontak" class="hover:text-gold-400 transition-colors">Kontak</a></li>
+        </ul>
+      </div>
+
+      <!-- Kontak singkat -->
+      <div>
+        <div class="text-white/60 text-xs font-semibold uppercase tracking-widest mb-4">Kontak</div>
+        <div class="space-y-3 text-xs text-white/40">
+          <div class="flex items-start gap-2">
+            <i class="fa-solid fa-location-dot text-gold-600 mt-0.5 flex-shrink-0"></i>
+            <span>Jl. Sosial Atas, PO Box 350, Sentani 99352, Kab. Jayapura, Papua</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-phone text-gold-600"></i>
+            <span>+62 967 591273</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-envelope text-gold-600"></i>
+            <span>info@ypa-papua.org</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-globe text-gold-600"></i>
+            <a href="https://www.ypa-papua.org" target="_blank" class="hover:text-gold-400 transition-colors">www.ypa-papua.org</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gold-divider mb-6"></div>
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/25">
+      <span>© 2025 Yayasan Pelayanan Antarbudaya Papua. Hak cipta dilindungi.</span>
+      <span>Membangun Manusia Papua Seutuhnya — Tubuh, Jiwa & Roh</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to top -->
+<button @click="window.scrollTo({top:0, behavior:'smooth'})"
+        x-show="scrolled"
+        x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-75" x-transition:enter-end="opacity-100 scale-100"
+        class="fixed bottom-8 right-8 z-50 w-12 h-12 btn-primary rounded-full flex items-center justify-center shadow-xl">
+  <i class="fa-solid fa-chevron-up text-white"></i>
+</button>
+
+<!-- ═══════════════════════════════════════════
+  ALPINE JS APP
+═══════════════════════════════════════════ -->
+<script>
+function app() {
+  return {
+    scrolled: false,
+    menuOpen: false,
+    activeGallery: 0,
+    lightbox: false,
+    lightboxItem: {},
+    formSent: false,
+    form: { name: '', email: '', topic: '', message: '' },
+
+    navItems: [
+      { id: 'tentang',   label: 'Tentang Kami', icon: 'fa-solid fa-users' },
+      { id: 'visi-misi', label: 'Visi & Misi',  icon: 'fa-solid fa-eye' },
+      { id: 'program',   label: 'Program',       icon: 'fa-solid fa-graduation-cap' },
+      { id: 'dampak',    label: 'Dampak',        icon: 'fa-solid fa-chart-line' },
+      { id: 'galeri',    label: 'Galeri',        icon: 'fa-solid fa-images' },
+      { id: 'mitra',     label: 'Mitra',         icon: 'fa-solid fa-handshake' },
+      { id: 'kontak',    label: 'Kontak',        icon: 'fa-solid fa-envelope' },
+    ],
+
+    values: [
+      { title: 'Holistik',       desc: 'Mental, spiritual & jasmani',   icon: 'fa-solid fa-infinity',       bg: 'rgba(240,192,64,0.15)',  color: '#f0c040' },
+      { title: 'Inklusif',       desc: 'Laki-laki & perempuan setara',  icon: 'fa-solid fa-people-group',   bg: 'rgba(35,181,168,0.15)', color: '#23b5a8' },
+      { title: 'Komunitas',      desc: 'Pengembangan dari bawah',       icon: 'fa-solid fa-house-chimney',  bg: 'rgba(46,109,164,0.2)',  color: '#2e6da4' },
+      { title: 'Antarbudaya',    desc: 'Menghargai keragaman bahasa',   icon: 'fa-solid fa-earth-asia',     bg: 'rgba(240,192,64,0.15)',  color: '#f0c040' },
+      { title: 'Kemitraan',      desc: 'Bersama pemerintah & gereja',   icon: 'fa-solid fa-handshake',      bg: 'rgba(35,181,168,0.15)', color: '#23b5a8' },
+      { title: 'Pelayanan',      desc: 'Jiwa melayani setiap generasi', icon: 'fa-solid fa-heart',          bg: 'rgba(217,124,43,0.15)', color: '#d97c2b' },
+    ],
+
+    missions: [
+      { title: 'Kepemimpinan', desc: 'Meningkatkan kemampuan kepemimpinan dalam masyarakat dan gereja melalui pendidikan formal, non-formal dan informal untuk menghasilkan pemimpin Papua yang berkomitmen.' },
+      { title: 'Pemberdayaan', desc: 'Meningkatkan keberdayaan masyarakat Papua dalam bidang ekonomi, kesehatan, dan pendidikan dasar melalui pendekatan pengembangan masyarakat.' },
+      { title: 'Penelitian', desc: 'Melaksanakan penelitian dan pengembangan dalam bidang sosial, ekonomi, pendidikan, bahasa, budaya, kesehatan, dan ilmu pengetahuan tepat guna.' },
+      { title: 'Publikasi', desc: 'Menerbitkan hasil penelitian dan penerjemahan buku-buku dan dokumen-dokumen yang bernilai tinggi dalam upaya membangun manusia Papua.' },
+    ],
+
+    programStats: [
+      { value: '24', label: 'Maks. Siswa/Semester', icon: 'fa-solid fa-users', color: '#f0c040', bg: 'rgba(240,192,64,0.12)' },
+      { value: '12+', label: 'Pengajar per Tahun',  icon: 'fa-solid fa-chalkboard-teacher', color: '#23b5a8', bg: 'rgba(35,181,168,0.12)' },
+      { value: '10',  label: 'Mata Kuliah Inti',    icon: 'fa-solid fa-book-open', color: '#d97c2b', bg: 'rgba(217,124,43,0.12)' },
+    ],
+
+    programs: [
+      {
+        id: 'titip',
+        title: 'Program TITIP',
+        subtitle: 'Training Indonesians for Transition to Institutional Programs',
+        icon: 'fa-solid fa-graduation-cap',
+        bg: 'rgba(240,192,64,0.15)', color: '#f0c040',
+        desc: 'Program unggulan YPA-Papua yang dijalankan sejak 1999. TITIP mencari, mengenali, dan melatih orang-orang muda Papua yang memiliki kualitas kepemimpinan dan mau menginvestasikan hidup mereka untuk melayani orang lain. Diselenggarakan dalam pola berasrama.',
+        items: [
+          'Full-Time Course — 10-12 bulan, pola berasrama',
+          'Bahasa Inggris intensif & persiapan TOEFL',
+          'Matematika & Pemikiran Kritis',
+          'Pengembangan Karakter & Rohani',
+          'Pengembangan Masyarakat & Usaha Kecil',
+          'Part-Time English Course (4 jam/minggu)',
+          'Teacher Training — pelatihan guru Papua',
+          'Summer Course & English for Special Need',
+        ]
+      },
+      {
+        id: 'misi',
+        title: 'Program Misi & Literasi',
+        subtitle: 'Penerjemahan & Pemberdayaan Bahasa Daerah Papua',
+        icon: 'fa-solid fa-book-bible',
+        bg: 'rgba(35,181,168,0.15)', color: '#23b5a8',
+        desc: 'Departemen Misi YPA-Papua bergerak di bidang literasi dan penerjemahan Alkitab ke dalam bahasa-bahasa daerah Papua yang masih terisolasi. Program ini menjangkau suku-suku di pedalaman dan pesisir Papua.',
+        items: [
+          'Literasi & Penerjemahan Bahasa Walak (Pegunungan Tengah)',
+          'Kabupaten Jayawijaya, Mamberamo Tengah, Yalimo',
+          'Literasi & Penerjemahan Bahasa Obokui (Mamberamo Raya)',
+          'Literasi & Penerjemahan Bahasa Irarutu',
+          'Kab. Teluk Bintuni, Kaimana, Fakfak',
+          'Penerjemahan Alkitab ke bahasa daerah',
+          'Renungan mingguan digital berbahasa lokal',
+          'Pemberdayaan komunitas berbasis kampung',
+        ]
+      },
+      {
+        id: 'komunitas',
+        title: 'Pemberdayaan Masyarakat & UKM',
+        subtitle: 'Let-Let Hut, Pelatihan Kepemimpinan & Usaha Kecil',
+        icon: 'fa-solid fa-store',
+        bg: 'rgba(217,124,43,0.15)', color: '#d97c2b',
+        desc: 'YPA-Papua menjalankan berbagai program pemberdayaan ekonomi dan sosial masyarakat Papua, termasuk pengelolaan toko kerajinan tangan dan pelatihan manajemen berbasis kampung.',
+        items: [
+          'Let-Let Hut Sentani — toko kerajinan tangan Papua',
+          'Produk dari pegunungan dan pesisir Papua',
+          'Pelatihan Kepemimpinan berbasis kampung',
+          'Organisasi & Manajemen Kampung',
+          'Praktikum lapangan mahasiswa TITIP',
+          'Pendampingan usaha kecil menengah',
+          'Workshop musik & drama untuk pembangunan',
+          'Program BCP (Belajar Cara Papua / Learning that Lasts)',
+        ]
+      },
+    ],
+
+    stats: [
+      { num: '30+', label: 'Tahun Pelayanan', note: 'Berdiri sejak 1992', icon: 'fa-solid fa-calendar-days', color: '#f0c040', bg: 'rgba(240,192,64,0.12)' },
+      { num: '384+', label: 'Alumni TITIP', note: 'Sejak program 1999', icon: 'fa-solid fa-users-graduate', color: '#23b5a8', bg: 'rgba(35,181,168,0.12)' },
+      { num: '3', label: 'Bahasa Daerah', note: 'Walak, Obokui, Irarutu', icon: 'fa-solid fa-language', color: '#d97c2b', bg: 'rgba(217,124,43,0.12)' },
+      { num: '2', label: 'Wilayah Provinsi', note: 'Papua & Papua Barat', icon: 'fa-solid fa-map-marked-alt', color: '#2e6da4', bg: 'rgba(46,109,164,0.2)' },
+    ],
+
+    alumniAchievements: [
+      { title: 'Penerbangan Nasional', desc: 'Pilot Garuda Indonesia, Sriwijaya Air, Trigana Air', icon: 'fa-solid fa-plane', color: '#f0c040', bg: 'rgba(240,192,64,0.12)' },
+      { title: 'Pendidikan Tinggi', desc: 'Perguruan tinggi dalam & luar negeri', icon: 'fa-solid fa-university', color: '#23b5a8', bg: 'rgba(35,181,168,0.12)' },
+      { title: 'Birokrasi Pemerintahan', desc: 'Tingkat provinsi, kabupaten, kota, & nasional', icon: 'fa-solid fa-landmark', color: '#d97c2b', bg: 'rgba(217,124,43,0.12)' },
+    ],
+
+    languages: [
+      { name: 'Bahasa Walak', region: 'Kab. Jayawijaya · Mamberamo Tengah · Yalimo', badge: 'Pegunungan Tengah', tags: ['Literasi', 'Penerjemahan', 'Alkitab'] },
+      { name: 'Bahasa Obokui', region: 'Kabupaten Mamberamo Raya', badge: 'Mamberamo', tags: ['Literasi', 'Pemberdayaan', 'Penerjemahan'] },
+      { name: 'Bahasa Irarutu', region: 'Kab. Teluk Bintuni · Kaimana · Fakfak', badge: 'Papua Barat', tags: ['Literasi', 'Misi Lapangan'] },
+    ],
+
+    galleryCategories: ['Semua', 'Akademik', 'Lapangan', 'Komunitas'],
+    galleryItems: [
+      { id: 1, icon: 'fa-solid fa-graduation-cap', color: '#f0c040', label: 'Wisuda TITIP', desc: 'Upacara kelulusan mahasiswa TITIP — momen bersejarah bagi generasi muda Papua.' },
+      { id: 2, icon: 'fa-solid fa-book-open', color: '#23b5a8', label: 'Kegiatan Belajar', desc: 'Kelas Bahasa Inggris intensif bersama pengajar penutur asli.' },
+      { id: 3, icon: 'fa-solid fa-map-location-dot', color: '#d97c2b', label: 'Misi Lapangan', desc: 'Tim misi YPA-Papua di komunitas bahasa Walak, Pegunungan Tengah.' },
+      { id: 4, icon: 'fa-solid fa-people-group', color: '#2e6da4', label: 'Pengembangan Komunitas', desc: 'Praktikum mahasiswa TITIP bersama masyarakat kampung.' },
+      { id: 5, icon: 'fa-solid fa-music', color: '#f0c040', label: 'Workshop Musik', desc: 'Lokakarya pembuatan alat musik dan drama untuk pembangunan.' },
+      { id: 6, icon: 'fa-solid fa-praying-hands', color: '#23b5a8', label: 'Ibadah Bersama', desc: 'Ibadah Natal YPA-Papua — perayaan rohani komunitas.' },
+      { id: 7, icon: 'fa-solid fa-store', color: '#d97c2b', label: 'Let-Let Hut', desc: 'Toko kerajinan tangan Papua — produk dari pegunungan dan pesisir.' },
+      { id: 8, icon: 'fa-solid fa-plane-departure', color: '#2e6da4', label: 'Alumni Berprestasi', desc: 'Alumni TITIP yang berhasil meraih karier di dunia penerbangan nasional.' },
+    ],
+
+    mitra: [
+      { name: 'Wycliffe Global Alliance', type: 'Internasional', desc: 'YPA-Papua adalah anggota Wycliffe Global Alliance — jaringan organisasi penerjemahan Alkitab dan pemberdayaan bahasa internasional.', icon: 'fa-solid fa-earth-americas', color: '#f0c040', bg: 'rgba(240,192,64,0.12)' },
+      { name: 'Hilcrest International School', type: 'Pendidikan', desc: 'Mitra fasilitas olahraga bagi mahasiswa TITIP, mendukung pengembangan jasmani dan interaksi budaya.', icon: 'fa-solid fa-school', color: '#23b5a8', bg: 'rgba(35,181,168,0.12)' },
+      { name: 'Pemerintah Provinsi Papua', type: 'Pemerintah', desc: 'Dukungan operasional, legalitas, dan program pengembangan SDM Papua dari tingkat provinsi.', icon: 'fa-solid fa-landmark', color: '#d97c2b', bg: 'rgba(217,124,43,0.12)' },
+      { name: 'Kemenkumham & Kemenag RI', type: 'Pemerintah Pusat', desc: 'Legitimasi dan registrasi resmi yayasan pada tingkat nasional melalui kementerian terkait.', icon: 'fa-solid fa-building-columns', color: '#2e6da4', bg: 'rgba(46,109,164,0.2)' },
+      { name: 'Gereja-gereja di Papua', type: 'Mitra Rohani', desc: 'Kemitraan strategis dengan berbagai denominasi gereja di Papua dalam program pendidikan dan pengembangan masyarakat.', icon: 'fa-solid fa-church', color: '#f0c040', bg: 'rgba(240,192,64,0.12)' },
+      { name: 'Pengajar & Volunteer Internasional', type: 'Sumber Daya', desc: 'Sekitar 12 pengajar per tahun termasuk penutur asli bahasa Inggris dan relawan internasional yang berkontribusi dalam program TITIP.', icon: 'fa-solid fa-users', color: '#23b5a8', bg: 'rgba(35,181,168,0.12)' },
+    ],
+
+    contactInfo: [
+      { label: 'Alamat', value: 'Jl. Sosial Atas, PO Box 350', sub: 'Sentani 99352, Kab. Jayapura, Papua, Indonesia', icon: 'fa-solid fa-location-dot', color: '#f0c040', bg: 'rgba(240,192,64,0.12)' },
+      { label: 'Telepon', value: '+62 967 591273', sub: 'Hari kerja, jam 08.00–16.00 WIT', icon: 'fa-solid fa-phone', color: '#23b5a8', bg: 'rgba(35,181,168,0.12)' },
+      { label: 'Email', value: 'info@ypa-papua.org', sub: null, icon: 'fa-solid fa-envelope', color: '#d97c2b', bg: 'rgba(217,124,43,0.12)' },
+      { label: 'Website', value: 'www.ypa-papua.org', sub: 'Bahasa Indonesia & English', icon: 'fa-solid fa-globe', color: '#2e6da4', bg: 'rgba(46,109,164,0.2)' },
+    ],
+
+    onScroll() {
+      this.scrolled = window.scrollY > 60;
+    },
+
+    submitForm() {
+      this.formSent = true;
+      setTimeout(() => { this.formSent = false; this.form = { name:'', email:'', topic:'', message:'' }; }, 3000);
+    },
+
+    openLightbox(item) {
+      this.lightboxItem = item;
+      this.lightbox = true;
+    },
+
+    init() {
+      // Scroll reveal observer
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            observer.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+    }
+  }
+}
+</script>
+</body>
+</html>
