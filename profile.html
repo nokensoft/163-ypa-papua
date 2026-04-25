@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YPA Papua | Profile</title>
+  <link rel="icon" type="image/png" href="img/logo-ypa-papua.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="assets/site.css" />
+  <script defer src="assets/site.js"></script>
+</head>
+<body>
+  <div class="page-loader" data-page-loader>
+    <img src="img/logo-ypa-papua.png" alt="YPA Papua Logo" />
+    <p>Loading page...</p>
+  </div>
+
+  <div class="site-shell">
+    <header class="top-shell">
+      <div class="topbar">
+        <div class="container topbar-inner">
+          <p class="topbar-title"><strong>Language:</strong> English (Default)</p>
+          <div class="topbar-actions">
+            <label class="note" for="customTranslate">Translate</label>
+            <select id="customTranslate" class="translate-select" data-translate-select>
+              <option value="en">English</option>
+              <option value="id">Indonesian</option>
+            </select>
+            <button type="button" class="theme-btn" data-theme-toggle>
+              <i class="fa-solid fa-moon"></i>
+              <span>Dark Mode</span>
+            </button>
+          </div>
+          <div id="google_translate_element" class="hidden-translate-widget"></div>
+        </div>
+      </div>
+
+      <nav class="navbar">
+        <div class="container nav-inner">
+          <a class="brand-link" href="index.html">
+            <img src="img/logo-ypa-papua.png" alt="YPA Papua Logo" />
+            <span class="brand-copy">
+              YPA Papua
+              <small>Center ofr Intercultural Ministry<br />Partner in Community Transformation</small>
+            </span>
+          </a>
+
+          <button class="menu-toggle" type="button" data-menu-toggle aria-label="Open menu" aria-expanded="false">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
+          <div class="nav-desktop">
+            <ul class="nav-list">
+              <li><a class="nav-link" href="index.html">Home</a></li>
+              <li class="about-dropdown">
+                <button type="button" class="nav-link nav-trigger is-active" data-about-trigger>
+                  About
+                  <i class="fa-solid fa-chevron-down note"></i>
+                </button>
+                <div class="mega-menu">
+                  <div class="mega-grid">
+                    <div class="mega-intro">
+                      <h4>About YPA Papua</h4>
+                      <p>Explore our foundation identity, background, and mission framework through dedicated detail pages.</p>
+                    </div>
+                    <a class="mega-link" href="profile.html">
+                      <h5>Profile</h5>
+                      <p>Who we are and what we do.</p>
+                    </a>
+                    <a class="mega-link" href="about.html">
+                      <h5>About</h5>
+                      <p>Our journey and organization context.</p>
+                    </a>
+                    <a class="mega-link" href="mission.html">
+                      <h5>Mission</h5>
+                      <p>Core mission pillars and priorities.</p>
+                    </a>
+                  </div>
+                </div>
+              </li>
+              <li><a class="nav-link" href="titip.html">TITIP</a></li>
+              <li><a class="nav-link" href="blog.html">Blog</a></li>
+              <li><a class="nav-link" href="gallery.html">Gallery</a></li>
+              <li><a class="nav-link" href="donation.html">Donation</a></li>
+              <li><a class="nav-link" href="shop.html">Shop</a></li>
+              <li><a class="nav-link" href="contact.html">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="container mobile-nav" data-mobile-nav>
+          <div class="mobile-group">
+            <a class="mobile-link" href="index.html">Home</a>
+            <a class="mobile-link is-active" href="about.html">About</a>
+            <div class="mobile-sub">
+              <a class="mobile-link is-active" href="profile.html">Profile</a>
+              <a class="mobile-link" href="about.html">About Detail</a>
+              <a class="mobile-link" href="mission.html">Mission</a>
+            </div>
+            <a class="mobile-link" href="titip.html">TITIP</a>
+            <a class="mobile-link" href="blog.html">Blog</a>
+            <a class="mobile-link" href="gallery.html">Gallery</a>
+            <a class="mobile-link" href="donation.html">Donation</a>
+            <a class="mobile-link" href="shop.html">Shop</a>
+            <a class="mobile-link" href="contact.html">Contact</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="site-main">
+      <section class="hero-block">
+        <div class="container">
+          <span class="eyebrow"><i class="fa-solid fa-id-card"></i> Profile Detail</span>
+          <h1>Who we are and what we do</h1>
+          <p>YPA Papua works as an intercultural service foundation focusing on people development and community transformation.</p>
+        </div>
+      </section>
+
+      <section class="page-section">
+        <div class="container card-grid grid-2">
+          <article class="card">
+            <img class="media media-founder" src="img/pendiri.png" alt="YPA Papua Founder" />
+            <h3>Who We Are</h3>
+            <p>We are a Papua-based organization committed to holistic human development through education, social service, and ministry collaboration.</p>
+            <ul class="list">
+              <li>Community-centered foundation model.</li>
+              <li>Partnership approach with local and external institutions.</li>
+              <li>Long-term service orientation for sustainable impact.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>What We Do</h3>
+            <ul class="list">
+              <li>Leadership and character formation initiatives.</li>
+              <li>Learning programs and practical academic preparation.</li>
+              <li>Intercultural mission and literacy support.</li>
+              <li>Community empowerment projects with local participation.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="page-section alt">
+        <div class="container">
+          <div class="section-head">
+            <h2>Core identity values</h2>
+          </div>
+          <div class="card-grid grid-3">
+            <article class="card"><h3>Integrity</h3><p>Responsible stewardship and transparent service in every program.</p></article>
+            <article class="card"><h3>Inclusion</h3><p>Equal participation and opportunity for diverse communities.</p></article>
+            <article class="card"><h3>Collaboration</h3><p>Shared growth through strategic partnerships and local ownership.</p></article>
+          </div>
+        </div>
+      </section>
+    </main>
+    <section class="home-cta-strip">
+      <div class="container home-cta-inner">
+        <img class="home-cta-media" src="./img/gambar2.png" alt="TITIP program preview" />
+        <div class="home-cta-copy">
+          <h2>Ready to join the TITIP program?</h2>
+          <p>Continue your growth journey in mentoring, capacity building, and future preparation with YPA Papua.</p>
+          <a class="btn home-cta-btn" href="titip.html"><i class="fa-solid fa-school"></i> TITIP Program</a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <a href="index.html" class="footer-brand">
+              <img src="img/logo-ypa-papua.png" alt="YPA Papua Logo" />
+              <span>
+                <strong>YPA Papua</strong><br />
+                <span class="note">Intercultural ministry and community development.</span>
+              </span>
+            </a>
+            <p class="note">Serving people and communities through leadership, mission, education, and practical empowerment across Papua.</p>
+          </div>
+          <div>
+            <h4>Navigation</h4>
+            <ul class="footer-links">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="profile.html">Profile</a></li>
+              <li><a href="about.html">About</a></li>
+              <li><a href="mission.html">Mission</a></li>
+              <li><a href="titip.html">TITIP</a></li>
+              <li><a href="blog.html">Blog</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+              <li><a href="donation.html">Donation</a></li>
+              <li><a href="shop.html">Shop</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Contact</h4>
+            <ul class="footer-links">
+              <li><a href="mailto:info@ypa-papua.org">info@ypa-papua.org</a></li>
+              <li><a href="https://www.ypa-papua.org" target="_blank" rel="noopener noreferrer">www.ypa-papua.org</a></li>
+              <li><span class="note">Sentani, Papua, Indonesia</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-copy">© 2026 YPA Papua. Static multi-page layout with consistent header and footer.<br /><a href="https://nokensoft.com" target="_blank" rel="noopener noreferrer">Powered by Nokensoft.com</a></div>
+      </div>
+    </footer>
+  </div>
+  <div class="disclaimer-modal" data-disclaimer-modal role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="disclaimerTitle">
+    <div class="disclaimer-panel">
+      <h3 id="disclaimerTitle">Disclaimer</h3>
+      <p>This website is still in the early offering stage.</p>
+      <p>Built by the Nokensoft.com team.</p>
+      <p>Contact person: +62 811-4811-343</p>
+      <button type="button" class="btn btn-primary disclaimer-action" data-disclaimer-close>I Understand</button>
+    </div>
+  </div>
+</body>
+</html>
